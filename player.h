@@ -1,3 +1,6 @@
+#ifndef FEUP_IART_PLAYER_H
+#define FEUP_IART_PLAYER_H
+
 #include "stone.h"
 #include <string>
 #include <vector>
@@ -13,6 +16,8 @@ class Player{
     public:
 
 };
+
+#endif //FEUP_IART_PLAYER_H
 
 
 

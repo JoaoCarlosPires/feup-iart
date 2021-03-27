@@ -1,3 +1,6 @@
+#ifndef FEUP_IART_TILES_H
+#define FEUP_IART_TILES_H
+
 #include "stone.h"
 #include <vector>
 #include <string>
@@ -15,3 +18,5 @@ class Tiles{
         Tiles(unsigned int x, unsigned int y);
         void setStone(Stone &s);
 };
+
+#endif //FEUP_IART_TILES_H

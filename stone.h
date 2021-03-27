@@ -1,3 +1,6 @@
+#ifndef FEUP_IART_STONE_H
+#define FEUP_IART_STONE_H
+
 #include <string>
 
 using namespace std;
@@ -25,3 +28,5 @@ class FlatStone: public Stone{
         bool wall;
     public:
 };
+
+#endif //FEUP_IART_STONE_H
