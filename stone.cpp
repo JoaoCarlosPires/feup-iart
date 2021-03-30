@@ -10,8 +10,8 @@ void Stone::setPosition(unsigned int x, unsigned int y) {
 
 }
 
-Stone::Stone(char color) {
-
+Stone::Stone(int color) {
+    this->color = color;
 }
 
 string Stone::toString() {
@@ -26,6 +26,14 @@ string FlatStone::toString() {
     return this->symbol;
 }
 
+FlatStone::FlatStone(int color, bool wall) : Stone(color) {
+    this->wall = wall;
+}
+
 string Capstone::toString() {
     return this->symbol;
+}
+
+Capstone::Capstone(int color) : Stone(color) {
+
 }

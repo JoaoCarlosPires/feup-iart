@@ -37,5 +37,9 @@ vector<vector<Tile>> Board::getTiles() {
 
 int Board::getSize() {
     return this->x;
+}
+
+void Board::update(vector<vector<Tile>> board) {
+    this->tiles = board;
 };
 

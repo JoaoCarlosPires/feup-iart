@@ -19,6 +19,7 @@ class Board{
         void draw();
         vector<vector<Tile>> getTiles();
         int getSize();
+        void update(vector<vector<Tile>> board);
 };
 
 #endif //FEUP_IART_BOARD_H

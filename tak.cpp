@@ -33,12 +33,23 @@ void Tak::gameCycle() {
         play = getPlay();
     }
 
-    //makeMove(play);
+    makeMove(play);
     gameCycle();
 }
 
 void Tak::makeMove(vector<int> play) {
-
+    if (play.size() == 4) {
+        vector<vector<Tile>> board = this->board.getTiles();
+        Stone toMove = board[play[1]][play[0]].pop();
+        board[play[3]][play[2]].add2(toMove);
+        this->board.update(board);
+    } else if (play.size() == 3) {
+        vector<vector<Tile>> board = this->board.getTiles();
+        board[play[2]][play[1]].add(play[0], this->currentPlayer);
+        this->board.update(board);
+    } else {
+        cout << "Error!\n";
+    }
 }
 
 // Still to do - move an entire stack or part of it
@@ -49,6 +60,12 @@ bool Tak::canPlay(vector<int> play) {
         bool originEmpty = this->board.getTiles()[play[1]][play[0]].isEmpty();
         bool destEmpty = this->board.getTiles()[play[3]][play[2]].isEmpty();
         return (isAdjacent(origin, dest) && !originEmpty && !destEmpty);
+
+        // Still to do: verify is the destination tile has a standing stone
+        // or a capstone, which might turn the movement into an invalid one
+        // depending on the piece to move
+
+        // Also to do: check if the piece to move is the same color as the current player
     } else if (play.size() == 3) { // Case when a piece from outside the board is move to there
         int piece = play[0];
         if (piece == 1 || piece == 2) { // if is a flat or standing stone
@@ -85,11 +102,14 @@ bool Tak::isAdjacent(vector<int> origin, vector<int> dest) {
 }
 
 bool Tak::endOfGame() {
+    // true if the board is full or if at least one player built a path
     return false;
 }
 
 void Tak::getWinner() {
-
+    // first, check if there's a path for one player
+    // if there's one path for each one, wins the last player to make a move
+    // else check which player has the most visible pieces
 }
 
 void Tak::drawHeader() {
