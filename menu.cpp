@@ -18,6 +18,7 @@ void Menu::drawMainMenu() {
 
     int mode = 0;
     while (mode != 1 && mode != 2 && mode != 3) {
+        cout << "\nInput: ";
         cin >> mode;
     }
 
@@ -31,6 +32,7 @@ void Menu::drawMainMenu() {
         cout << "3. Hard\n";
 
         while (difficultyP1 != 1 && difficultyP1 != 2 && difficultyP1 != 3) {
+            cout << "\nInput: ";
             cin >> difficultyP1;
         }
 
@@ -41,6 +43,7 @@ void Menu::drawMainMenu() {
             cout << "3. Hard\n";
 
             while (difficultyP2 != 1 && difficultyP2 != 2 && difficultyP2 != 3) {
+                cout << "\nInput: ";
                 cin >> difficultyP2;
             }
         }

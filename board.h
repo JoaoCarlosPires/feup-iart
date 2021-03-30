@@ -2,7 +2,7 @@
 #define FEUP_IART_BOARD_H
 
 #include "stone.h"
-#include "tiles.h"
+#include "tile.h"
 #include <string>
 #include <vector>
 
@@ -13,10 +13,12 @@ class Board{
     private:
         int x;
         int y;
-        vector<vector<Tiles>> tiles;
+        vector<vector<Tile>> tiles;
     public:
         Board(int x, int y);
         void draw();
+        vector<vector<Tile>> getTiles();
+        int getSize();
 };
 
 #endif //FEUP_IART_BOARD_H
