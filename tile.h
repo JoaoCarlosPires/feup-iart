@@ -11,7 +11,7 @@ using namespace std;
 
 class Tile{
     private:
-        stack<Stone> stack;
+        stack<Stone> stacks;
         unsigned int posX;
         unsigned int posY;
         bool empty;

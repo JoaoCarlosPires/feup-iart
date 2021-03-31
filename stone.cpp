@@ -18,6 +18,10 @@ string Stone::toString() {
     return "";
 }
 
+int Stone::getColor() {
+    return this->color;
+}
+
 void FlatStone::changeToFlat() {
 
 }
@@ -30,6 +34,10 @@ FlatStone::FlatStone(int color, bool wall) : Stone(color) {
     this->wall = wall;
 }
 
+int FlatStone::getColor() {
+    return this->color;
+}
+
 string Capstone::toString() {
     return this->symbol;
 }
@@ -37,3 +45,8 @@ string Capstone::toString() {
 Capstone::Capstone(int color) : Stone(color) {
 
 }
+
+int Capstone::getColor() {
+    return this->color;
+}
+

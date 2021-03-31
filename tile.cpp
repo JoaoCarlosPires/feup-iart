@@ -1,7 +1,7 @@
 #include "tile.h"
 
 Stone Tile::getTop() {
-    return stack.top();
+    return stacks.top();
 }
 
 void Tile::setStone(Stone &s) {
@@ -22,17 +22,17 @@ void Tile::add(int pieceType, int color) {
     switch (pieceType) {
         case 1: {
             FlatStone newF = FlatStone(color, false);
-            this->stack.push(newF);
+            this->stacks.push(newF);
             break;
         }
         case 2: {
             FlatStone newF = FlatStone(color, true);
-            this->stack.push(newF);
+            this->stacks.push(newF);
             break;
         }
         case 3: {
             Capstone newC = Capstone(color);
-            this->stack.push(newC);
+            this->stacks.push(newC);
             return;
         }
         default:
@@ -42,11 +42,11 @@ void Tile::add(int pieceType, int color) {
 }
 
 void Tile::add2(Stone stone) {
-    this->stack.push(stone);
+    this->stacks.push(stone);
 }
 
 Stone Tile::pop() {
-    Stone toReturn = this->stack.top();
-    this->stack.pop();
+    Stone toReturn = this->stacks.top();
+    this->stacks.pop();
     return toReturn;
 }

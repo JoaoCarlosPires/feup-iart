@@ -34,6 +34,10 @@ class Tak{
         vector<int> getDestTile();
         int getPieceToMove();
         bool isAdjacent(vector<int> origin, vector<int> dest);
+        bool pathHorizontal();
+        bool pathVertical();
+        bool isPathBuilt();
+        int visibleWinner();
 };
 
 #endif //FEUP_IART_TAK_H

@@ -43,3 +43,14 @@ void Board::update(vector<vector<Tile>> board) {
     this->tiles = board;
 };
 
+bool Board::allTilesFull() {
+    for(int i=0; i<x; i++){
+        for(int j=0; j<y; j++){
+            if(tiles[i][j].isEmpty()){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+

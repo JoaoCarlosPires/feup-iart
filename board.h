@@ -18,6 +18,10 @@ class Board{
         Board(int x, int y);
         void draw();
         vector<vector<Tile>> getTiles();
+        bool allTilesFull();
+        int isPathBuilt();
+        int pathHorizontal();
+        int pathVertical();
         int getSize();
         void update(vector<vector<Tile>> board);
 };
