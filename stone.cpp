@@ -7,7 +7,8 @@ using namespace std;
 
 
 void Stone::setPosition(unsigned int x, unsigned int y) {
-
+    this->posX = x;
+    this->posY = y;
 }
 
 Stone::Stone(int color) {
@@ -23,7 +24,8 @@ int Stone::getColor() {
 }
 
 void FlatStone::changeToFlat() {
-
+    this->symbol = "F";
+    this->wall = 0;
 }
 
 string FlatStone::toString() {
@@ -43,7 +45,6 @@ string Capstone::toString() {
 }
 
 Capstone::Capstone(int color) : Stone(color) {
-
 }
 
 int Capstone::getColor() {
