@@ -8,32 +8,33 @@ using namespace std;
 class Stone{
     protected:
         int color;
+        string symbol;
         unsigned int posX;
         unsigned int posY;
     public:
-        Stone(int color);
+        Stone(int color, string symbol);
         void setPosition(unsigned int x, unsigned int y);
-        virtual string toString();
         virtual int getColor();
+        virtual string getSymbol();
 };
 
 class Capstone: public Stone{
     private:
-        string symbol = "C";
+        string symbol;
     public:
         Capstone(int color);
-        string toString() override ;
+        string getSymbol() override ;
         int getColor() override;
 };
 
 class FlatStone: public Stone{
     private:
-        string symbol = "F";
+        string symbol;
         bool wall;
     public:
         FlatStone(int color, bool wall);
         void changeToFlat();
-        string toString() override ;
+        string getSymbol() override ;
         int getColor() override;
 };
 

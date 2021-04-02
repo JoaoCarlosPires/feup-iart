@@ -16,7 +16,7 @@ class Board{
         vector<vector<Tile>> tiles;
     public:
         Board(int x, int y);
-        void draw();
+        void draw(int player);
         vector<vector<Tile>> getTiles();
         bool allTilesFull();
         int isPathBuilt();

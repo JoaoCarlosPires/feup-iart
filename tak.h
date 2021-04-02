@@ -38,6 +38,8 @@ class Tak{
         bool pathVertical();
         bool isPathBuilt();
         int visibleWinner();
+        bool getPathV(vector<vector<Tile>> tiles, int line, int col);
+        bool getPathH(vector<vector<Tile>> tiles, int line, int col);
 };
 
 #endif //FEUP_IART_TAK_H

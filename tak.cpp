@@ -40,30 +40,42 @@ void Tak::gameCycle() {
 void Tak::makeMove(vector<int> play) {
     if (play.size() == 4) {
         vector<vector<Tile>> board = this->board.getTiles();
-        Stone toMove = board[play[1]][play[0]].pop();
-        board[play[3]][play[2]].add2(toMove);
+        Stone toMove = board[play[0]][play[1]].pop();
+        board[play[2]][play[3]].add2(toMove);
         this->board.update(board);
     } else if (play.size() == 3) {
         vector<vector<Tile>> board = this->board.getTiles();
-        board[play[2]][play[1]].add(play[0], this->currentPlayer);
+        switch (play[0]) {
+            case 1:
+                this->currentPlayer==1?this->numFStonesP1--:this->numFStonesP2--;
+                break;
+            case 2:
+                this->currentPlayer==1?this->numFStonesP1--:this->numFStonesP2--;
+                break;
+            case 3:
+                this->currentPlayer==1?this->numCStonesP1--:this->numCStonesP2--;
+                break;
+            default:
+                cout << "Error!\n";
+        }
+        board[play[1]][play[2]].add(play[0], this->currentPlayer);
         this->board.update(board);
     } else {
         cout << "Error!\n";
     }
 }
 
-// Still to do - move an entire stack or part of it
 bool Tak::canPlay(vector<int> play) {
     if (play.size() == 4) { // Case when there's a move inside the board of just one piece
-        if(this->board.getTiles()[play[1]][play[0]].getTop().getColor() != currentPlayer){
+        if(this->board.getTiles()[play[0]][play[1]].getTop()->getColor() != currentPlayer){
             return false;
         }
         vector<int> origin; origin.push_back(play[0]); origin.push_back(play[1]);
         vector<int> dest; dest.push_back(play[2]); dest.push_back(play[3]);
-        bool originEmpty = this->board.getTiles()[play[1]][play[0]].isEmpty();
-        bool destEmpty = this->board.getTiles()[play[3]][play[2]].isEmpty();
+        bool originEmpty = this->board.getTiles()[play[0]][play[1]].isEmpty();
+        bool destEmpty = this->board.getTiles()[play[2]][play[3]].isEmpty();
         if(!destEmpty && !originEmpty){
-            string destStone = this->board.getTiles()[play[3]][play[2]].getTop().toString();
+            string destStone = this->board.getTiles()[play[2]][play[3]].getTop()->getSymbol();
             if(destStone == "C"){
                 return false;
             }
@@ -84,10 +96,9 @@ bool Tak::canPlay(vector<int> play) {
                 cout << "Insuficient number of pieces\n";
                 return false;
             }
-            int origin = play[1];
-            int dest = play[2];
-            if (!this->board.getTiles()[dest][origin].isEmpty()) return false;
-            return true;
+            int line = play[1];
+            int col = play[2];
+            return this->board.getTiles()[line][col].isEmpty();
         } else { // if is a capstone
             if ((this->currentPlayer == 1 && this->numCStonesP1 < 1) || (this->currentPlayer == 2 && this->numCStonesP2 < 1)) {
                 cout << "Insuficient number of pieces\n";
@@ -113,17 +124,20 @@ bool Tak::isAdjacent(vector<int> origin, vector<int> dest) {
 }
 
 bool Tak::endOfGame() {
-    // true if the board is full or if at least one player built a path
-    if(this->board.allTilesFull() || this->board.isPathBuilt()){ // need to test if both functions are functional
-        return true;
+    // true if the board is full, if at least one player built a path or if the player is out of pieces
+    int numPiecesLeft;
+    if (this->currentPlayer == 1) {
+        numPiecesLeft = this->numCStonesP1 + this->numFStonesP1;
+    } else {
+        numPiecesLeft = this->numCStonesP2 + this->numFStonesP2;
     }
-    return false;
+    return (this->board.allTilesFull() || isPathBuilt() || (numPiecesLeft == 0));
 }
 
 void Tak::getWinner() {
-    // first, check if there's a path for one player
-    // if there's one path for each one, wins the last player to make a move
-    // else check which player has the most visible pieces
+    // if there's just a path, wins that player
+    // if there are two paths, one for each player, wins the last one to make a move
+    // else wins the player with the most visible number of pieces
     if(isPathBuilt()){
         switch(currentPlayer){
             case 1:
@@ -136,7 +150,7 @@ void Tak::getWinner() {
                 cout << "Error\n";
         }
     }
-    if(this->board.allTilesFull()){
+    else {
         switch(visibleWinner()){
             case 1:
                 cout << "Player 1 won!";
@@ -171,6 +185,8 @@ void Tak::drawHeader() {
         default:
             cout << "Error!\n";
     }
+
+    cout << "\nS - Standing Stone; F - Flat Stone; C - Capstone\n";
     cout << "\n\n";
 }
 
@@ -179,20 +195,29 @@ int Tak::getMode() {
 }
 
 void Tak::drawBoard() {
-    this->board.draw();
+    this->board.draw(this->currentPlayer);
 }
 
 vector<int> Tak::getPlay() {
     vector<int> play;
 
-    cout << "Please choose your move:\n";
+    cout << "\nPlease choose your move:\n";
     cout << "1. Move piece from the board\n";
-    cout << "2. Move piece from outside the board\n";
 
     int sel = 0;
-    while (sel != 1 && sel != 2) {
-        cout << "\nInput: ";
-        cin >> sel;
+
+    bool hasPieces = this->currentPlayer==1?this->numFStonesP1+this->numCStonesP1>0:this->numFStonesP2+this->numCStonesP2>0;
+    if (hasPieces) {
+        cout << "2. Move piece from outside the board\n";
+        while (sel != 1 && sel != 2) {
+            cout << "\nInput: ";
+            cin >> sel;
+        }
+    } else {
+        while (sel != 1) {
+            cout << "\nInput: ";
+            cin >> sel;
+        }
     }
 
     vector<int> origin, dest;
@@ -226,14 +251,35 @@ vector<int> Tak::getPlay() {
 int Tak::getPieceToMove() {
 
     cout << "\nPIECE TO MOVE";
-    cout << "\n1. Flatstone";
-    cout << "\n2. Standingstone";
-    cout << "\n3. Capstone";
 
+    int available;
     int sel = 0;
-    while (sel != 1 && sel != 2 && sel != 3) {
-        cout << "\nInput: ";
-        cin >> sel;
+
+    if ((this->currentPlayer==1?this->numFStonesP1>0:this->numFStonesP2>0) && (this->currentPlayer==1?this->numCStonesP1>0:this->numCStonesP2>0)){
+        available = this->currentPlayer==1?this->numFStonesP1:this->numFStonesP2;
+        cout << "\n1. Flatstone (" << available << ")";
+        cout << "\n2. Standingstone (" << available << ")";
+        available = this->currentPlayer==1?this->numCStonesP1:this->numCStonesP2;
+        cout << "\n3. Capstone (" << available << ")";
+        while (sel != 1 && sel != 2 && sel != 3) {
+            cout << "\nInput: ";
+            cin >> sel;
+        }
+    } else if (this->currentPlayer==1?this->numCStonesP1>0:this->numCStonesP2>0) {
+        available = this->currentPlayer==1?this->numCStonesP1:this->numCStonesP2;
+        cout << "\n3. Capstone (" << available << ")";
+        while (sel != 3) {
+            cout << "\nInput: ";
+            cin >> sel;
+        }
+    } else {
+        available = this->currentPlayer==1?this->numFStonesP1:this->numFStonesP2;
+        cout << "\n1. Flatstone (" << available << ")";
+        cout << "\n2. Standingstone (" << available << ")";
+        while (sel != 1 && sel != 2) {
+            cout << "\nInput: ";
+            cin >> sel;
+        }
     }
 
     return sel;
@@ -250,6 +296,7 @@ vector<int> Tak::getDestTile() {
         cout << "\nInput: ";
         cin >> sel;
     }
+    sel--;
     position.push_back(sel);
 
     cout << "\nPlease choose column. Insert a value between 1 and " << this->board.getSize();
@@ -259,6 +306,8 @@ vector<int> Tak::getDestTile() {
         cout << "\nInput: ";
         cin >> sel;
     }
+
+    sel--;
     position.push_back(sel);
 
     return position;
@@ -275,6 +324,7 @@ vector<int> Tak::getOriginTile() {
         cout << "\nInput: ";
         cin >> sel;
     }
+    sel--;
     position.push_back(sel);
 
     cout << "\nPlease choose column. Insert a value between 1 and " << this->board.getSize();
@@ -284,6 +334,8 @@ vector<int> Tak::getOriginTile() {
         cout << "\nInput: ";
         cin >> sel;
     }
+
+    sel--;
     position.push_back(sel);
 
     return position;
@@ -307,35 +359,124 @@ string Tak::getDifficulty(string diff) {
     }
 }
 
-
 bool Tak::pathVertical() {
-    int currentY = 0;
+
     for (int j = 0; j < this->board.getSize(); j++) {
-        for (int i = 0; i < this->board.getSize(); i++) {
-            if(!this->board.getTiles()[i][j].isEmpty()){
-                if(this->board.getTiles()[i][j].getTop().getColor() == currentPlayer){ currentY = j;}
-                if(currentY == 5){return true;}
-            }
+        for (int k = 0; k < this->board.getSize(); k++) {
+            this->board.getTiles()[j][k].resetVisited();
         }
     }
-    return false;
+
+    bool hasPath = false;
+    vector<vector<Tile>> tiles = this->board.getTiles();
+
+    for (int i = 0; i < this->board.getSize(); i++) { // Para cada elemento da primeira linha (topo do tabuleiro)
+        if (tiles[0][i].isEmpty()) continue;
+        else if (tiles[0][i].getTop()->getColor() == this->currentPlayer) {
+            hasPath = hasPath || getPathV(tiles, 0, i);
+        }
+    }
+
+    return hasPath;
+}
+
+bool Tak::getPathV(vector<vector<Tile>> tiles, int line, int col) {
+    if (line == this->board.getSize()-1) return true;
+
+    tiles[line][col].setVisited();
+
+    bool path1 = false, path2 = false, path3 = false, path4 = false;
+
+    if (line == 0) {
+        if (!tiles[line+1][col].isEmpty())
+            if (tiles[line+1][col].getTop()->getColor() == this->currentPlayer && !tiles[line+1][col].getVisited()) path1 = getPathV(tiles, line+1, col);
+    } else if (line == this->board.getSize()-1) {
+        if (!tiles[line-1][col].isEmpty())
+            if (tiles[line-1][col].getTop()->getColor() == this->currentPlayer && !tiles[line-1][col].getVisited()) path1 = getPathV(tiles, line-1, col);
+    } else {
+        if (!tiles[line+1][col].isEmpty())
+            if (tiles[line+1][col].getTop()->getColor() == this->currentPlayer && !tiles[line+1][col].getVisited()) path1 = getPathV(tiles, line+1, col);
+        if (!tiles[line-1][col].isEmpty())
+            if (tiles[line-1][col].getTop()->getColor() == this->currentPlayer && !tiles[line-1][col].getVisited()) path2 = getPathV(tiles, line-1, col);
+
+    }
+
+    if (col == 0) {
+        if (!tiles[line][col+1].isEmpty())
+            if (tiles[line][col+1].getTop()->getColor() == this->currentPlayer && !tiles[line][col+1].getVisited()) path3 = getPathV(tiles, line, col+1);
+    } else if (col == this->board.getSize()-1) {
+        if (!tiles[line][col-1].isEmpty())
+            if (tiles[line][col-1].getTop()->getColor() == this->currentPlayer && !tiles[line][col-1].getVisited()) path3 = getPathV(tiles, line, col-1);
+    } else {
+        if (!tiles[line][col+1].isEmpty())
+            if (tiles[line][col+1].getTop()->getColor() == this->currentPlayer && !tiles[line][col+1].getVisited()) path3 = getPathV(tiles, line, col+1);
+        if (!tiles[line][col-1].isEmpty())
+            if (tiles[line][col-1].getTop()->getColor() == this->currentPlayer && !tiles[line][col-1].getVisited()) path4 = getPathV(tiles, line, col-1);
+    }
+
+    return path1 || path2 || path3 || path4;
+}
+
+bool Tak::getPathH(vector<vector<Tile>> tiles, int line, int col) {
+    if (col == this->board.getSize()-1) return true;
+
+    tiles[line][col].setVisited();
+
+    bool path1 = false, path2 = false, path3 = false, path4 = false;
+
+    if (line == 0) {
+        if (!tiles[line+1][col].isEmpty())
+            if (tiles[line+1][col].getTop()->getColor() == this->currentPlayer && !tiles[line+1][col].getVisited()) path1 = getPathV(tiles, line+1, col);
+    } else if (line == this->board.getSize()-1) {
+        if (!tiles[line-1][col].isEmpty())
+            if (tiles[line-1][col].getTop()->getColor() == this->currentPlayer && !tiles[line-1][col].getVisited()) path1 = getPathV(tiles, line-1, col);
+    } else {
+        if (!tiles[line+1][col].isEmpty())
+            if (tiles[line+1][col].getTop()->getColor() == this->currentPlayer && !tiles[line+1][col].getVisited()) path1 = getPathV(tiles, line+1, col);
+        if (!tiles[line-1][col].isEmpty())
+            if (tiles[line-1][col].getTop()->getColor() == this->currentPlayer && !tiles[line-1][col].getVisited()) path2 = getPathV(tiles, line-1, col);
+
+    }
+
+    if (col == 0) {
+        if (!tiles[line][col+1].isEmpty())
+            if (tiles[line][col+1].getTop()->getColor() == this->currentPlayer && !tiles[line][col+1].getVisited()) path3 = getPathV(tiles, line, col+1);
+    } else if (col == this->board.getSize()-1) {
+        if (!tiles[line][col-1].isEmpty())
+            if (tiles[line][col-1].getTop()->getColor() == this->currentPlayer && !tiles[line][col-1].getVisited()) path3 = getPathV(tiles, line, col-1);
+    } else {
+        if (!tiles[line][col+1].isEmpty())
+            if (tiles[line][col+1].getTop()->getColor() == this->currentPlayer && !tiles[line][col+1].getVisited()) path3 = getPathV(tiles, line, col+1);
+        if (!tiles[line][col-1].isEmpty())
+            if (tiles[line][col-1].getTop()->getColor() == this->currentPlayer && !tiles[line][col-1].getVisited()) path4 = getPathV(tiles, line, col-1);
+    }
+
+    return path1 || path2 || path3 || path4;
 }
 
 bool Tak::pathHorizontal() {
-    int currentX = 0;
-    for (int i = 0; i < this->board.getSize(); i++) {
-        for (int j = 0; j < this->board.getSize(); j++) {
-            if(!this->board.getTiles()[i][j].isEmpty()){
-                if(this->board.getTiles()[i][j].getTop().getColor() == currentPlayer){ currentX = i;}
-                if(currentX == 5){return true;}
-            }
+
+    for (int j = 0; j < this->board.getSize(); j++) {
+        for (int k = 0; k < this->board.getSize(); k++) {
+            this->board.getTiles()[j][k].resetVisited();
         }
     }
-    return false;
+
+    bool hasPath = false;
+    vector<vector<Tile>> tiles = this->board.getTiles();
+
+    for (int i = 0; i < this->board.getSize(); i++) { // Para cada elemento da primeira linha (topo do tabuleiro)
+        if (tiles[i][0].isEmpty()) continue;
+        else if (tiles[i][0].getTop()->getColor() == this->currentPlayer) {
+            hasPath = hasPath || getPathH(tiles, i, 0);
+        }
+    }
+
+    return hasPath;
 }
 
 bool Tak::isPathBuilt() {
-    return(pathVertical() || pathHorizontal());
+    return pathVertical() || pathHorizontal();
 }
 
 int Tak::visibleWinner() {
@@ -344,7 +485,7 @@ int Tak::visibleWinner() {
     for(int i=0; i<this->board.getSize(); i++){
         for(int j=0; j<this->board.getSize(); j++){
             if(!this->board.getTiles()[i][j].isEmpty()){
-                switch(this->board.getTiles()[i][j].getTop().getColor()){
+                switch(this->board.getTiles()[i][j].getTop()->getColor()){
                     case 1:
                         playerOnePieces++;
                         break;
@@ -357,6 +498,5 @@ int Tak::visibleWinner() {
             }
         }
     }
-    if(playerOnePieces > playerTwoPieces){ return 1;}
-    else{ return 2;}
+    return (playerOnePieces > playerTwoPieces)? 1 : 2;
 }
