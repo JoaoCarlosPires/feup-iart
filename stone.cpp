@@ -19,6 +19,10 @@ string Stone::toString() {
     return "";
 }
 
+bool Stone::isWall() {
+    return false;
+}
+
 int Stone::getColor() {
     return this->color;
 }
@@ -26,6 +30,10 @@ int Stone::getColor() {
 void FlatStone::changeToFlat() {
     this->symbol = "F";
     this->wall = 0;
+}
+
+bool FlatStone::isWall() {
+    return wall;
 }
 
 string FlatStone::toString() {

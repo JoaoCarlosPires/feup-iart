@@ -15,6 +15,7 @@ class Stone{
         void setPosition(unsigned int x, unsigned int y);
         virtual string toString();
         virtual int getColor();
+        virtual bool isWall();
 };
 
 class Capstone: public Stone{
@@ -35,6 +36,7 @@ class FlatStone: public Stone{
         void changeToFlat();
         string toString() override ;
         int getColor() override;
+        bool isWall() override;
 };
 
 #endif //FEUP_IART_STONE_H
