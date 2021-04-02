@@ -8,6 +8,14 @@ void Tile::setStone(Stone &s) {
 
 }
 
+int Tile::getSize() {
+    return stacks.size();
+}
+
+stack<Stone> Tile::getStack() {
+    return stacks;
+}
+
 Tile::Tile(unsigned int x, unsigned int y) {
     this->posX = x;
     this->posY = y;
@@ -61,4 +69,13 @@ Stone Tile::pop() {
     Stone toReturn = this->stacks.top();
     this->stacks.pop();
     return toReturn;
+}
+
+stack<Stone> Tile::getStackMove(int numberPieces) {
+    stack<Stone> result;
+    for(int i = 0; i<numberPieces; i++){
+        result.push(stacks.top());
+        stacks.pop();
+    }
+    return result;
 }

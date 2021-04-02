@@ -16,6 +16,10 @@ Stone::Stone(int color, string symbol) {
     this->symbol = symbol;
 }
 
+bool Stone::isWall() {
+    return false;
+}
+
 int Stone::getColor() {
     return this->color;
 }
@@ -31,6 +35,10 @@ void FlatStone::changeToFlat() {
 
 FlatStone::FlatStone(int color, bool wall) : Stone(color, wall?"S":"F") {
     this->wall = wall;
+}
+
+bool FlatStone::isWall() {
+    return wall;
 }
 
 int FlatStone::getColor() {

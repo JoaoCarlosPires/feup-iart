@@ -26,6 +26,9 @@ class Tile{
         void setVisited();
         bool getVisited();
         void resetVisited();
+        int getSize();
+        stack<Stone> getStack();
+        stack<Stone> getStackMove(int numberPieces);
 };
 
 #endif //FEUP_IART_TILE_H
