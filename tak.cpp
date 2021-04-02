@@ -38,7 +38,22 @@ void Tak::gameCycle() {
 }
 
 void Tak::makeMove(vector<int> play) {
-    if (play.size() == 4) {
+    if(play.size() == 5){
+        vector<vector<Tile>> board = this->board.getTiles();
+        stack<Stone> aux = board[play[1]][play[0]].getStackMove(play[4]);
+        for(int i=play[4]-1; i>=0; i--){
+            if(play[3] == play[1]){
+                board[play[3]][play[2]-i].add2(aux.top());
+                aux.pop();
+            }
+            if(play[2] == play[0]){
+                board[play[3]-i][play[2]].add2(aux.top());
+                aux.pop();
+            }
+        }
+        this->board.update(board);
+    }
+    else if (play.size() == 4) {
         vector<vector<Tile>> board = this->board.getTiles();
         Stone toMove = board[play[1]][play[0]].pop();
         board[play[3]][play[2]].add2(toMove);
@@ -52,9 +67,60 @@ void Tak::makeMove(vector<int> play) {
     }
 }
 
+bool Tak::isPlayable(vector<int> origin, vector<int> dest, int numOfPieces) {
+    if(origin[1] != dest[1] && origin[0] != dest[0]){return false;}
+    Tile aux = this->board.getTiles()[origin[1]][origin[0]];
+    if(aux.getSize() < numOfPieces){ return false;}
+    stack<Stone> pieces = aux.getStackMove(numOfPieces);
+    for(int i=numOfPieces; i>=0; i--){
+        if(origin[1] == dest[1]){
+            if(this->board.getTiles()[dest[1]][dest[0]-i].getTop().toString() == "C"){
+                return false;
+            }
+            if(this->board.getTiles()[dest[1]][dest[0]-i].getTop().isWall()){
+                if(pieces.top().toString() != "C"){
+                    return false;
+                }
+            }
+            pieces.pop();
+
+        }
+        if(origin[0] == dest[0]){
+            if(this->board.getTiles()[dest[1]-i][dest[0]].getTop().toString() == "C"){
+                return false;
+            }
+            if(this->board.getTiles()[dest[1]-i][dest[0]].getTop().isWall()){
+                if(pieces.top().toString() != "C"){
+                    return false;
+                }
+            }
+            pieces.pop();
+        }
+    }
+    return true;
+}
+
+
 // Still to do - move an entire stack or part of it
 bool Tak::canPlay(vector<int> play) {
-    if (play.size() == 4) { // Case when there's a move inside the board of just one piece
+    if(play.size() == 5){ // Case when there's a move inside the board with two or more pieces
+        if(this->board.getTiles()[play[1]][play[0]].getTop().getColor() != currentPlayer){
+            return false;
+        }
+        vector<int> origin; origin.push_back(play[0]); origin.push_back(play[1]);
+        vector<int> dest; dest.push_back(play[2]); dest.push_back(play[3]);
+        stack<Stone> pieces;
+
+        bool originEmpty = this->board.getTiles()[play[1]][play[0]].isEmpty();
+
+        if(!originEmpty){
+            if(isPlayable(origin, dest, play[4])){
+                return true;
+            }
+        }
+        return (isAdjacent(origin, dest) && !originEmpty);
+    }
+    else if (play.size() == 4) { // Case when there's a move inside the board of just one piece
         if(this->board.getTiles()[play[1]][play[0]].getTop().getColor() != currentPlayer){
             return false;
         }
@@ -114,7 +180,7 @@ bool Tak::isAdjacent(vector<int> origin, vector<int> dest) {
 
 bool Tak::endOfGame() {
     // true if the board is full or if at least one player built a path
-    if(this->board.allTilesFull() || this->board.isPathBuilt()){ // need to test if both functions are functional
+    if(this->board.allTilesFull() /*|| isPathBuilt()*/){ // need to test if both functions are functional
         return true;
     }
     return false;
@@ -203,10 +269,27 @@ vector<int> Tak::getPlay() {
             origin = getOriginTile();
             play.push_back(origin[0]);
             play.push_back(origin[1]);
-            dest = getDestTile();
-            play.push_back(dest[0]);
-            play.push_back(dest[1]);
-            break;
+            if(this->board.getTiles()[play[1]][play[0]].getSize() > 1){
+                int pieces = 0;
+                cout << "Please choose how many pieces to move:\n";
+                cout << "Input: ";
+                pieces = 0;
+                while(pieces < 1 || pieces > this->board.getTiles()[play[1]][play[0]].getSize()){
+                    cout << "\nInput: ";
+                    cin >> pieces;
+                }
+                dest = getDestTile();
+                play.push_back(dest[0]);
+                play.push_back(dest[1]);
+                play.push_back(pieces);
+                break;
+            }
+            else {
+                dest = getDestTile();
+                play.push_back(dest[0]);
+                play.push_back(dest[1]);
+                break;
+            }
         case 2:
             pieceToMove = getPieceToMove();
             play.push_back(pieceToMove);
@@ -318,7 +401,6 @@ bool Tak::pathVertical() {
             }
         }
     }
-    return false;
 }
 
 bool Tak::pathHorizontal() {

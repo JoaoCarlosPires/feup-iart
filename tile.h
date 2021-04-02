@@ -23,6 +23,9 @@ class Tile{
         void add(int pieceType, int color);
         void add2(Stone stone);
         Stone pop();
+        int getSize();
+        stack<Stone> getStack();
+        stack<Stone> getStackMove(int numberPieces);
 };
 
 #endif //FEUP_IART_TILE_H

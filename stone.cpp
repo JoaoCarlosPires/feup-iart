@@ -18,12 +18,20 @@ string Stone::toString() {
     return "";
 }
 
+bool Stone::isWall() {
+    return false;
+}
+
 int Stone::getColor() {
     return this->color;
 }
 
 void FlatStone::changeToFlat() {
 
+}
+
+bool FlatStone::isWall() {
+    return wall;
 }
 
 string FlatStone::toString() {
