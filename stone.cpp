@@ -11,13 +11,14 @@ void Stone::setPosition(unsigned int x, unsigned int y) {
     this->posY = y;
 }
 
-Stone::Stone(int color, string symbol) {
+Stone::Stone(int color, string symbol, bool wall) {
     this->color = color;
     this->symbol = symbol;
+    this->wall = wall;
 }
 
 bool Stone::isWall() {
-    return false;
+    return this->wall;
 }
 
 int Stone::getColor() {
@@ -33,12 +34,15 @@ void FlatStone::changeToFlat() {
     this->wall = 0;
 }
 
-FlatStone::FlatStone(int color, bool wall) : Stone(color, wall?"S":"F") {
-    this->wall = wall;
+FlatStone::FlatStone(int color, bool wall) : Stone(color, wall?"S":"F", wall) {
 }
 
 bool FlatStone::isWall() {
-    return wall;
+    return this->wall;
+}
+
+bool Capstone::isWall() {
+    return this->wall;
 }
 
 int FlatStone::getColor() {
@@ -49,7 +53,7 @@ string FlatStone::getSymbol() {
     return this->symbol;
 }
 
-Capstone::Capstone(int color) : Stone(color, "C") {
+Capstone::Capstone(int color) : Stone(color, "C", false) {
 }
 
 int Capstone::getColor() {

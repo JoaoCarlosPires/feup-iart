@@ -9,10 +9,11 @@ class Stone{
     protected:
         int color;
         string symbol;
+        bool wall;
         unsigned int posX;
         unsigned int posY;
     public:
-        Stone(int color, string symbol);
+        Stone(int color, string symbol, bool wall);
         void setPosition(unsigned int x, unsigned int y);
         virtual int getColor();
         virtual string getSymbol();
@@ -26,12 +27,12 @@ class Capstone: public Stone{
         Capstone(int color);
         string getSymbol() override ;
         int getColor() override;
+        bool isWall() override ;
 };
 
 class FlatStone: public Stone{
     private:
         string symbol;
-        bool wall;
     public:
         FlatStone(int color, bool wall);
         void changeToFlat();

@@ -49,6 +49,8 @@ void Menu::drawMainMenu() {
             cout << "\nInput: ";
             cin >> difficultyP2;
         }
+
+        difficultyP1 = 3;
     } else if (mode == 3) {
         cout << "Please choose the game difficulty for Player 1:\n\n";
         cout << "1. Easy\n";
