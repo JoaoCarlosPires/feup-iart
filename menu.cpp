@@ -22,11 +22,35 @@ void Menu::drawMainMenu() {
         cin >> mode;
     }
 
+    cout << "Game board size - Please select a number between 3 and 8\n\n";
+    cout << "3 (3x3)\n";
+    cout << "4 (4x4)\n";
+    cout << "5 (5x5)\n";
+    cout << "6 (6x6)\n";
+    cout << "7 (7x7)\n";
+    cout << "8 (8x8)\n";
+
+    int size = 0;
+    while (size < 3 || size > 8) {
+        cout << "\nInput: ";
+        cin >> size;
+    }
+
     int difficultyP2 = 0;
     int difficultyP1 = 0;
 
-    if (mode > 1) {
-        cout << "Now, please choose the game difficulty for Player 1:\n\n";
+    if (mode == 2) {
+        cout << "Please choose the game difficulty for Player 2:\n\n";
+        cout << "1. Easy\n";
+        cout << "2. Normal\n";
+        cout << "3. Hard\n";
+
+        while (difficultyP2 != 1 && difficultyP2 != 2 && difficultyP2 != 3) {
+            cout << "\nInput: ";
+            cin >> difficultyP2;
+        }
+    } else if (mode == 3) {
+        cout << "Please choose the game difficulty for Player 1:\n\n";
         cout << "1. Easy\n";
         cout << "2. Normal\n";
         cout << "3. Hard\n";
@@ -36,19 +60,17 @@ void Menu::drawMainMenu() {
             cin >> difficultyP1;
         }
 
-        if (mode == 3) {
-            cout << "Now, please choose the game difficulty for Player 2:\n\n";
-            cout << "1. Easy\n";
-            cout << "2. Normal\n";
-            cout << "3. Hard\n";
+        cout << "Now, please choose the game difficulty for Player 2:\n\n";
+        cout << "1. Easy\n";
+        cout << "2. Normal\n";
+        cout << "3. Hard\n";
 
-            while (difficultyP2 != 1 && difficultyP2 != 2 && difficultyP2 != 3) {
-                cout << "\nInput: ";
-                cin >> difficultyP2;
-            }
+        while (difficultyP2 != 1 && difficultyP2 != 2 && difficultyP2 != 3) {
+            cout << "\nInput: ";
+            cin >> difficultyP2;
         }
     }
 
-    Tak newGame = Tak(mode, difficultyP1, difficultyP2);
+    Tak newGame = Tak(mode, difficultyP1, difficultyP2, size);
     newGame.gameCycle();
 }

@@ -56,7 +56,7 @@ void Tile::add(int pieceType, int color) {
             return;
         }
         default:
-            cout << "Error!\n";
+            cout << "Error3!\n";
             break;
     }
 }

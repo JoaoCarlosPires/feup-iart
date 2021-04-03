@@ -15,7 +15,8 @@ Board::Board(int x, int y) {
 
 }
 
-void Board::draw(int player) {
+void Board::draw() {
+
     vector<vector<Tile>> tiles = getTiles();
     for (int k = 1; k <= this->x; k++) {
         cout << "\t" << k;
@@ -28,7 +29,7 @@ void Board::draw(int player) {
             else {
                 Stone* myStone;
                 myStone = tiles[l][c].getTop();
-                cout << myStone->getSymbol() << player << "\t";
+                cout << myStone->getSymbol() << myStone->getColor() << "\t";
             }
         }
         cout << "\n";
