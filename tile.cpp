@@ -1,7 +1,7 @@
 #include "tile.h"
 
-Stone Tile::getTop() {
-    return stacks.top();
+Stone * Tile::getTop() {
+    return &stacks.top();
 }
 
 void Tile::setStone(Stone &s) {
@@ -19,11 +19,23 @@ stack<Stone> Tile::getStack() {
 Tile::Tile(unsigned int x, unsigned int y) {
     this->posX = x;
     this->posY = y;
-    this->empty = true;
+    this->visited = false;
+}
+
+void Tile::setVisited() {
+    this->visited = true;
+}
+
+void Tile::resetVisited() {
+    this->visited = false;
+}
+
+bool Tile::getVisited() {
+    return this->visited;
 }
 
 bool Tile::isEmpty() {
-    return this->empty;
+    return this->stacks.empty();
 }
 
 void Tile::add(int pieceType, int color) {

@@ -14,15 +14,18 @@ class Tile{
         stack<Stone> stacks;
         unsigned int posX;
         unsigned int posY;
-        bool empty;
+        bool visited;
     public:
         Tile(unsigned int x, unsigned int y);
         void setStone(Stone &s);
-        Stone getTop();
+        Stone * getTop();
         bool isEmpty();
         void add(int pieceType, int color);
         void add2(Stone stone);
         Stone pop();
+        void setVisited();
+        bool getVisited();
+        void resetVisited();
         int getSize();
         stack<Stone> getStack();
         stack<Stone> getStackMove(int numberPieces);
